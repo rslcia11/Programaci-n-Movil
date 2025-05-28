@@ -20,8 +20,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+// Primera pantalla con cambio de color (Estado dinámico)
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isRed = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +42,9 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Esta es la primera pantalla',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: isRed ? Colors.red : Colors.blue),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -47,6 +55,15 @@ class HomeScreen extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isRed = !isRed;
+                });
+              },
+              child: const Text('Cambiar color del texto'),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -68,8 +85,16 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class DetailScreen extends StatelessWidget {
+// Segunda pantalla con contador dinámico (Estado dinámico)
+class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +116,32 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'SALU2',
-              style: TextStyle(fontSize: 18),
+            Text(
+              'Contador: $counter',
+              style: const TextStyle(fontSize: 22),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      counter++;
+                    });
+                  },
+                  child: const Text('Incrementar'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      counter--;
+                    });
+                  },
+                  child: const Text('Disminuir'),
+                ),
+              ],
             ),
             const SizedBox(height: 30),
             Image.network(
