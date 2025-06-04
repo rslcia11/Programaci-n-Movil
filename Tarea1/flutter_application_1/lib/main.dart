@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+ 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+// Provider para controlar el tema
+class ThemeProvider extends ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  ThemeMode get themeMode => _themeMode;
+
+  void toggleTheme(bool isDarkMode) {
+    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -9,10 +27,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'App',
+      themeMode: themeProvider.themeMode,
       theme: ThemeData(
+        brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       home: const HomeScreen(),
@@ -20,7 +46,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Primera pantalla con cambio de color (Estado dinámico)
+// Primera pantalla
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -33,10 +59,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          Row(
+            children: [
+              const Icon(Icons.light_mode),
+              Switch(
+                value: isDarkMode,
+                onChanged: (value) {
+                  themeProvider.toggleTheme(value);
+                },
+              ),
+              const Icon(Icons.dark_mode),
+              const SizedBox(width: 8),
+            ],
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -44,7 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Esta es la primera pantalla',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: isRed ? Colors.red : Colors.blue),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: isRed ? Colors.red : Colors.blue,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -65,15 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const DetailScreen()),
                 );
               },
               child: const Text('Seguir a la segunda pantalla', style: TextStyle(fontSize: 16)),
@@ -85,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Segunda pantalla con contador dinámico (Estado dinámico)
+// Segunda pantalla
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
 
@@ -110,10 +153,7 @@ class _DetailScreenState extends State<DetailScreen> {
           children: [
             const Text(
               'Esta es la segunda pantalla',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Text(
