@@ -1,3 +1,4 @@
+// App mejorada con Drawer, BottomNavigationBar y TabBar
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,12 +11,9 @@ void main() {
   );
 }
 
-// Provider para controlar el tema
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
-
   ThemeMode get themeMode => _themeMode;
-
   void toggleTheme(bool isDarkMode) {
     _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
@@ -29,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
-      title: 'App',
+      title: 'App con Navegación',
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         brightness: Brightness.light,
@@ -46,16 +44,33 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Primera pantalla
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool isRed = true;
+  int _bottomIndex = 0;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  final List<Widget> _bottomScreens = [
+    const Placeholder(fallbackHeight: 100),
+    const Placeholder(fallbackHeight: 100),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter'),
+        title: const Text('Flutter Navegación'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           Row(
@@ -72,66 +87,92 @@ class _HomeScreenState extends State<HomeScreen> {
               const Icon(Icons.light_mode),
               Switch(
                 value: isDarkMode,
-                onChanged: (value) {
-                  themeProvider.toggleTheme(value);
-                },
+                onChanged: (value) => themeProvider.toggleTheme(value),
               ),
               const Icon(Icons.dark_mode),
               const SizedBox(width: 8),
             ],
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Principal'),
+            Tab(text: 'Alterna'),
+          ],
+        ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Text(
-              'Esta es la primera pantalla',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: isRed ? Colors.red : Colors.blue,
-              ),
-              textAlign: TextAlign.center,
+            DrawerHeader(
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+              child: const Text('Menú Lateral', style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-            const SizedBox(height: 20),
-            Image.network(
-              'https://img.freepik.com/free-photo/sports-motorcycle-speed-motion-blur-dark-background_645697-1864.jpg',
-              width: 300,
-              height: 200,
-              fit: BoxFit.cover,
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Inicio'),
+              onTap: () => Navigator.pop(context),
             ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isRed = !isRed;
-                });
-              },
-              child: const Text('Cambiar color del texto'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DetailScreen()),
-                );
-              },
-              child: const Text('Seguir a la segunda pantalla', style: TextStyle(fontSize: 16)),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Acerca de'),
+              onTap: () {},
             ),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Esta es la primera pantalla',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: isRed ? Colors.red : Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => setState(() => isRed = !isRed),
+                  child: const Text('Cambiar color del texto'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DetailScreen()),
+                    );
+                  },
+                  child: const Text('Ir a la segunda pantalla'),
+                ),
+              ],
+            ),
+          ),
+          _bottomScreens[_bottomIndex],
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _bottomIndex,
+        onTap: (index) => setState(() => _bottomIndex = index),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
+        ],
       ),
     );
   }
 }
 
-// Segunda pantalla
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
-
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
@@ -156,53 +197,20 @@ class _DetailScreenState extends State<DetailScreen> {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Contador: $counter',
-              style: const TextStyle(fontSize: 22),
-            ),
+            Text('Contador: $counter', style: const TextStyle(fontSize: 22)),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      counter++;
-                    });
-                  },
-                  child: const Text('Incrementar'),
-                ),
+                ElevatedButton(onPressed: () => setState(() => counter++), child: const Text('Incrementar')),
                 const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      counter--;
-                    });
-                  },
-                  child: const Text('Disminuir'),
-                ),
+                ElevatedButton(onPressed: () => setState(() => counter--), child: const Text('Disminuir')),
               ],
             ),
-            const SizedBox(height: 30),
-            Image.network(
-              'https://img.freepik.com/free-photo/red-sports-bike-black-background_1150-4694.jpg',
-              width: 300,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
             const SizedBox(height: 20),
-            Image.network(
-              'https://img.freepik.com/free-photo/blue-black-powerful-motorcycle-road_114579-4070.jpg',
-              width: 300,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Volver a la primera pantalla', style: TextStyle(fontSize: 16)),
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Volver a la pantalla principal'),
             ),
           ],
         ),
