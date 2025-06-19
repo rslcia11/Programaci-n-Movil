@@ -67,11 +67,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  final List<Widget> _bottomScreens = [
-    const Placeholder(fallbackHeight: 100),
-    const Placeholder(fallbackHeight: 100),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -94,13 +89,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Principal'),
-            Tab(text: 'Alterna'),
-          ],
-        ),
+        bottom: _bottomIndex == 0
+            ? TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: 'Principal'),
+                  Tab(text: 'Alterna'),
+                ],
+              )
+            : null,
       ),
       drawer: Drawer(
         child: ListView(
@@ -123,42 +120,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: _bottomIndex == 0
+          ? TabBarView(
+              controller: _tabController,
               children: [
-                Text(
-                  'Esta es la primera pantalla',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: isRed ? Colors.red : Colors.blue,
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Esta es la primera pantalla',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: isRed ? Colors.red : Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => setState(() => isRed = !isRed),
+                        child: const Text('Cambiar color del texto'),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const DetailScreen()),
+                          );
+                        },
+                        child: const Text('Ir a la segunda pantalla'),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => setState(() => isRed = !isRed),
-                  child: const Text('Cambiar color del texto'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const DetailScreen()),
-                    );
-                  },
-                  child: const Text('Ir a la segunda pantalla'),
-                ),
+                const Center(child: Text("Vista Alterna")),
               ],
-            ),
-          ),
-          _bottomScreens[_bottomIndex],
-        ],
-      ),
+            )
+          : const SettingsScreen(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomIndex,
         onTap: (index) => setState(() => _bottomIndex = index),
@@ -214,6 +213,20 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Aquí van los ajustes',
+        style: TextStyle(fontSize: 24),
       ),
     );
   }
