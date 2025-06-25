@@ -1,4 +1,4 @@
-// App mejorada con Drawer, BottomNavigationBar y TabBar
+// App mejorada con Drawer, BottomNavigationBar, TabBar, Column, Row, Stack y personalización visual
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,13 +31,33 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF00695C),
+          secondary: Color(0xFF004D40),
+          surface: Color(0xFFFFFFFF),
+          background: Color(0xFFE0F2F1),
+          error: Color(0xFFB00020),
+        ),
         useMaterial3: true,
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Arial'),
+          titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF80CBC4),
+          secondary: Color(0xFF4DB6AC),
+          surface: Color(0xFF37474F),
+          background: Color(0xFF263238),
+          error: Color(0xFFEF9A9A),
+        ),
         useMaterial3: true,
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Arial'),
+          titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
       ),
       home: const HomeScreen(),
     );
@@ -128,13 +148,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Esta es la primera pantalla',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: isRed ? Colors.red : Colors.blue,
-                        ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 200,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          Text(
+                            'Esta es la primera pantalla',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: isRed ? Colors.red : Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -142,14 +175,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: const Text('Cambiar color del texto'),
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const DetailScreen()),
-                          );
-                        },
-                        child: const Text('Ir a la segunda pantalla'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const DetailScreen()),
+                              );
+                            },
+                            child: const Text('Ir a la segunda pantalla'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -191,9 +229,22 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Esta es la segunda pantalla',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.teal[100],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                const Text(
+                  'Esta es la segunda pantalla',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Text('Contador: $counter', style: const TextStyle(fontSize: 22)),
@@ -201,9 +252,11 @@ class _DetailScreenState extends State<DetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: () => setState(() => counter++), child: const Text('Incrementar')),
+                ElevatedButton(
+                    onPressed: () => setState(() => counter++), child: const Text('Incrementar')),
                 const SizedBox(width: 10),
-                ElevatedButton(onPressed: () => setState(() => counter--), child: const Text('Disminuir')),
+                ElevatedButton(
+                    onPressed: () => setState(() => counter--), child: const Text('Disminuir')),
               ],
             ),
             const SizedBox(height: 20),
@@ -223,10 +276,18 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Aquí van los ajustes',
-        style: TextStyle(fontSize: 24),
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text(
+          'Aquí van los ajustes',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
     );
   }
