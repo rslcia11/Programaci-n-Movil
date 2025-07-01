@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Producto Local 1",
+    "price": 29.99,
+    "image": "local_product_icon.png",
+    "isLocal": true
+  },
+  {
+    "id": 2,
+    "name": "Producto Local 2",
+    "price": 499.99,
+    "image": "local_product_icon2.jpg",
+    "isLocal": true
+  }
+]
