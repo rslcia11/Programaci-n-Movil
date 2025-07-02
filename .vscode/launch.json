@@ -5,21 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_application_1",
-            "cwd": "Tarea1\\flutter_application_1",
+            "name": "app_actividad",
+            "cwd": "app_actividad",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "flutter_application_1 (profile mode)",
-            "cwd": "Tarea1\\flutter_application_1",
+            "name": "app_actividad (profile mode)",
+            "cwd": "app_actividad",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "flutter_application_1 (release mode)",
-            "cwd": "Tarea1\\flutter_application_1",
+            "name": "app_actividad (release mode)",
+            "cwd": "app_actividad",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "pm_s4_wimartinezji",
+            "cwd": "Semana4\\pm_s4_wimartinezji",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "pm_s4_wimartinezji (profile mode)",
+            "cwd": "Semana4\\pm_s4_wimartinezji",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "pm_s4_wimartinezji (release mode)",
+            "cwd": "Semana4\\pm_s4_wimartinezji",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
