@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'models/user.dart';
 import 'services/api_service.dart';
+import 'screens/mapa_ubicacion.dart';  // Importar pantalla del mapa
 
 void main() => runApp(const MyApp());
 
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
       title: 'API Practice',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const UserScreen(),
+      routes: {
+        '/mapa': (context) => MapaUbicacion(),
+      },
     );
   }
 }
@@ -70,6 +74,13 @@ class _UserScreenState extends State<UserScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshData,
+          ),
+          IconButton(
+            icon: const Icon(Icons.map),
+            tooltip: 'Mostrar mapa',
+            onPressed: () {
+              Navigator.pushNamed(context, '/mapa');
+            },
           ),
         ],
       ),

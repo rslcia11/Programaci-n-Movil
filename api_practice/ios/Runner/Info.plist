@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Permisos para ubicación -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Se necesita la ubicación para mostrar tu posición en el mapa.</string>
+	
+	<!-- Opcional: ubicación en segundo plano -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Se necesita acceso a la ubicación en segundo plano para actualizar tu posición aunque la app no esté activa.</string>
+	
+	<!-- Permite actualización de ubicación en background -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	
 </dict>
 </plist>
